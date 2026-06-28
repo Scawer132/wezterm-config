@@ -9,34 +9,34 @@ local options = {
    unix_domains = {},
 
    -- ref: https://wezfurlong.org/wezterm/config/lua/WslDomain.html
-   wsl_domains = {},
+    wsl_domains = {},
 }
 
 if platform.is_win then
    options.ssh_domains = {
       {
          name = 'ssh:wsl',
-         username = 'kevin',
+         username = 'lenovo',
          remote_address = 'localhost',
          multiplexing = 'None',
-         default_prog = { 'fish', '-l' },
+         default_prog = { 'zsh', '-l' },
          assume_shell = 'Posix',
       },
    }
 
    options.wsl_domains = {
       {
-         name = 'wsl:ubuntu-fish',
+         name = 'wsl:ubuntu-zsh',
          distribution = 'Ubuntu',
-         username = 'kevin',
-         default_cwd = '/home/kevin',
-         default_prog = { 'fish', '-l' },
+         username = 'lenovo',
+         default_cwd = '/home/lenovo',
+         default_prog = { 'zsh', '-l' },
       },
       {
          name = 'wsl:ubuntu-bash',
          distribution = 'Ubuntu',
-         username = 'kevin',
-         default_cwd = '/home/kevin',
+         username = 'lenovo',
+         default_cwd = '/home/lenovo',
          default_prog = { 'bash', '-l' },
       },
    }

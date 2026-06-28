@@ -1,5 +1,5 @@
+local wezterm = require('wezterm')
 local gpu_adapters = require('utils.gpu-adapter')
-local backdrops = require('utils.backdrops')
 local colors = require('colors.custom')
 
 ---@type Config
@@ -16,14 +16,27 @@ return {
    animation_fps = 120,
    cursor_blink_ease_in = 'EaseOut',
    cursor_blink_ease_out = 'EaseOut',
-   default_cursor_style = 'BlinkingBlock',
+   default_cursor_style = 'BlinkingBar',
    cursor_blink_rate = 650,
 
    -- color scheme
    colors = colors,
 
-   -- background: pass in `true` if you want wezterm to start with focus mode on (no bg images)
-   background = backdrops:initial_options({ no_img = false }),
+   -- background
+   background = {
+      {
+         source = { File = wezterm.config_dir .. '/backdrops/devel.png' },
+         horizontal_align = 'Center',
+      },
+      {
+         source = { Color = colors.background },
+         height = '120%',
+         width = '120%',
+         vertical_offset = '-10%',
+         horizontal_offset = '-10%',
+         opacity = 0.96,
+      },
+   },
 
    -- scrollbar
    enable_scroll_bar = true,
@@ -53,13 +66,7 @@ return {
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
       active_titlebar_bg = '#090909',
-      -- font = fonts.font,
-      -- font_size = fonts.font_size,
    },
-   -- inactive_pane_hsb = {
-   --    saturation = 0.9,
-   --    brightness = 0.65,
-   -- },
    inactive_pane_hsb = {
       saturation = 1,
       brightness = 1,
