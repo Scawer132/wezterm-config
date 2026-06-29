@@ -25,7 +25,7 @@ return {
    -- background
    background = {
       {
-         source = { File = wezterm.config_dir .. '/backdrops/devel.png' },
+         source = { File = wezterm.config_dir .. '/backdrops/final.jpeg' },
          horizontal_align = 'Center',
       },
       {
