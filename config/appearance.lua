@@ -25,8 +25,9 @@ return {
    -- background
    background = {
       {
-         source = { File = wezterm.config_dir .. '/backdrops/final.jpeg' },
+         source = { File = wezterm.config_dir .. '/backdrops/mio.png' },
          horizontal_align = 'Center',
+         vertical_align = 'Middle',
       },
       {
          source = { Color = colors.background },
