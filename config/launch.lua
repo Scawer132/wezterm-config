@@ -7,9 +7,10 @@ local options = {
 }
 
 if platform.is_win then
-   options.default_prog = { 'pwsh', '-NoLogo' }
+   options.default_prog = { 'nu' }
    options.default_cwd = 'C:\\Users\\lenovo'
    options.launch_menu = {
+      { label = 'Nushell', args = { 'nu' } },
       { label = 'PowerShell Core', args = { 'pwsh', '-NoLogo' } },
       { label = 'PowerShell Desktop', args = { 'powershell' } },
       { label = 'Command Prompt', args = { 'cmd' } },
