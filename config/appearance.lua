@@ -66,7 +66,7 @@ return {
    adjust_window_size_when_changing_font_size = false,
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
-      active_titlebar_bg = '#090909',
+      active_titlebar_bg = '#11111b', -- Mocha crust（原 #090909 不属任何色板）
    },
    inactive_pane_hsb = {
       saturation = 1,

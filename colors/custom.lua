@@ -37,25 +37,28 @@ local colorscheme = {
    cursor_fg = mocha.crust,
    selection_bg = mocha.surface2,
    selection_fg = mocha.text,
+   -- ANSI 0-15 采用 Catppuccin Mocha 官方终端映射（catppuccin/kitty themes/mocha.conf）。
+   -- 原先是 Windows "Campbell" 色板，与 Mocha 的窗口/标签栏不是一套东西：
+   -- git diff、ls --color 的饱和红绿蓝会和背景明显打架。
    ansi = {
-      '#0C0C0C', -- black
-      '#C50F1F', -- red
-      '#13A10E', -- green
-      '#C19C00', -- yellow
-      '#0037DA', -- blue
-      '#881798', -- magenta/purple
-      '#3A96DD', -- cyan
-      '#CCCCCC', -- white
+      '#45475a', -- black   surface1
+      '#f38ba8', -- red
+      '#a6e3a1', -- green
+      '#f9e2af', -- yellow
+      '#89b4fa', -- blue
+      '#f5c2e7', -- magenta (Mocha 用 pink)
+      '#94e2d5', -- cyan    (Mocha 用 teal)
+      '#bac2de', -- white   subtext1
    },
    brights = {
-      '#767676', -- black
-      '#E74856', -- red
-      '#16C60C', -- green
-      '#F9F1A5', -- yellow
-      '#3B78FF', -- blue
-      '#B4009E', -- magenta/purple
-      '#61D6D6', -- cyan
-      '#F2F2F2', -- white
+      '#585b70', -- black   surface2
+      '#f38ba8', -- red
+      '#a6e3a1', -- green
+      '#f9e2af', -- yellow
+      '#89b4fa', -- blue
+      '#f5c2e7', -- magenta
+      '#94e2d5', -- cyan
+      '#a6adc8', -- white   subtext0
    },
    tab_bar = {
       background = 'rgba(0, 0, 0, 0.4)',
