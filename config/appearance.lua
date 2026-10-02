@@ -1,6 +1,7 @@
 local wezterm = require('wezterm')
 local gpu_adapters = require('utils.gpu-adapter')
 local colors = require('colors.custom')
+local fonts = require('config.fonts')
 
 ---@type Config
 return {
@@ -25,12 +26,12 @@ return {
    -- background
    background = {
       {
-         source = { File = wezterm.config_dir .. '/backdrops/mio.png' },
+         source = { File = wezterm.config_dir .. '/backdrops/tree.png' },
          horizontal_align = 'Center',
          vertical_align = 'Middle',
       },
       {
-         source = { Color = colors.background },
+         source = { Color = '#11111b' },
          height = '120%',
          width = '120%',
          vertical_offset = '-10%',
@@ -45,7 +46,7 @@ return {
    -- tab bar
    enable_tab_bar = true,
    hide_tab_bar_if_only_one_tab = false,
-   use_fancy_tab_bar = false,
+   use_fancy_tab_bar = true, ---@type 'true' 会让 INTEGRATED_BUTTONS 以 Windows 原生比例渲染
    tab_max_width = 23,
    show_tab_index_in_tab_bar = false,
    switch_to_last_active_tab_when_closing_tab = true,
@@ -57,6 +58,10 @@ return {
    command_palette_rows = 25,
 
    -- window
+   window_decorations = 'INTEGRATED_BUTTONS|RESIZE', -- 去掉原生标题栏，最小化/最大化/关闭按钮由 tab bar 渲染
+   integrated_title_button_style = 'Windows',
+   integrated_title_button_color = 'Auto',
+   integrated_title_button_alignment = 'Right',
    window_padding = {
       left = 0,
       right = 0,
@@ -67,6 +72,9 @@ return {
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
       active_titlebar_bg = '#11111b', -- Mocha crust（原 #090909 不属任何色板）
+      inactive_titlebar_bg = '#11111b',
+      font = fonts.font, -- fancy tab bar / 标题栏文字字体（含 Nerd Font 图标）
+      font_size = fonts.font_size,
    },
    inactive_pane_hsb = {
       saturation = 1,
