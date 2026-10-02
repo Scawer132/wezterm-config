@@ -201,6 +201,7 @@ local key_tables = {
    },
 }
 
+-- stylua: ignore
 ---@type MouseBinding[]
 local mouse_bindings = {
    -- Ctrl-click will open the link under the mouse cursor
@@ -209,12 +210,42 @@ local mouse_bindings = {
       mods = 'CTRL',
       action = act.OpenLinkAtMouseCursor,
    },
+
+   -- selection: mouse down
+   { event = { Down = { streak = 1, button = 'Left' } }, mods = 'NONE',      action = act.SelectTextAtMouseCursor('Cell') },
+   { event = { Down = { streak = 2, button = 'Left' } }, mods = 'NONE',      action = act.SelectTextAtMouseCursor('Word') },
+   { event = { Down = { streak = 3, button = 'Left' } }, mods = 'NONE',      action = act.SelectTextAtMouseCursor('Line') },
+   { event = { Down = { streak = 1, button = 'Left' } }, mods = 'SHIFT',     action = act.ExtendSelectionToMouseCursor('Cell') },
+   { event = { Down = { streak = 1, button = 'Left' } }, mods = 'ALT',       action = act.SelectTextAtMouseCursor('Block') },
+   { event = { Down = { streak = 1, button = 'Left' } }, mods = 'ALT|SHIFT', action = act.ExtendSelectionToMouseCursor('Block') },
+
+   -- selection: drag
+   { event = { Drag = { streak = 1, button = 'Left' } }, mods = 'NONE', action = act.ExtendSelectionToMouseCursor('Cell') },
+   { event = { Drag = { streak = 2, button = 'Left' } }, mods = 'NONE', action = act.ExtendSelectionToMouseCursor('Word') },
+   { event = { Drag = { streak = 3, button = 'Left' } }, mods = 'NONE', action = act.ExtendSelectionToMouseCursor('Line') },
+   { event = { Drag = { streak = 1, button = 'Left' } }, mods = 'ALT',  action = act.ExtendSelectionToMouseCursor('Block') },
+
+   -- selection: mouse up — complete into the primary selection only,
+   -- never the system clipboard (defaults used ClipboardAndPrimarySelection)
+   { event = { Up = { streak = 1, button = 'Left' } }, mods = 'NONE',      action = act.CompleteSelectionOrOpenLinkAtMouseCursor('PrimarySelection') },
+   { event = { Up = { streak = 1, button = 'Left' } }, mods = 'SHIFT',     action = act.CompleteSelectionOrOpenLinkAtMouseCursor('PrimarySelection') },
+   { event = { Up = { streak = 1, button = 'Left' } }, mods = 'ALT',       action = act.CompleteSelection('PrimarySelection') },
+   { event = { Up = { streak = 1, button = 'Left' } }, mods = 'ALT|SHIFT', action = act.CompleteSelection('PrimarySelection') },
+   { event = { Up = { streak = 2, button = 'Left' } }, mods = 'NONE',      action = act.CompleteSelection('PrimarySelection') },
+   { event = { Up = { streak = 3, button = 'Left' } }, mods = 'NONE',      action = act.CompleteSelection('PrimarySelection') },
+
+   -- window drag
+   { event = { Drag = { streak = 1, button = 'Left' } }, mods = 'SUPER',      action = act.StartWindowDrag },
+   { event = { Drag = { streak = 1, button = 'Left' } }, mods = 'CTRL|SHIFT', action = act.StartWindowDrag },
+
+   -- middle-click paste
+   { event = { Down = { streak = 1, button = 'Middle' } }, mods = 'NONE', action = act.PasteFrom('PrimarySelection') },
 }
 
 ---@type Config
 return {
    disable_default_key_bindings = true,
-   -- disable_default_mouse_bindings = true,
+   disable_default_mouse_bindings = true,
    leader = { key = 'Space', mods = mod.SUPER_REV },
    keys = keys,
    key_tables = key_tables,
