@@ -272,6 +272,61 @@ local function create_title(process_name, base_title, max_width, inset)
    return title
 end
 
+-- 右侧固定占用的像素/格数预算（与 events/right-status.lua 的分段宽度对应）：
+-- 右状态合计 ~24.5 cells（日期图标 3 + 'Thu 22:49:39' 11 + 分隔符 4 + 电池 6），
+-- 三个 Windows 风格窗口按钮 ~46px each（window_buttons.rs 的 padding+poly），
+-- 新建标签按钮 ~2.5 cells，另留边距与测量误差余量。
+local RIGHT_STATUS_CELLS = 25
+local WINDOW_BUTTONS_PX = 140
+local NEW_TAB_BUTTON_PX = 30
+local BAR_SLACK_PX = 30
+
+---fancy tab bar 的标签宽度上限公式是 `窗口像素宽 / 标签数 - 1.5 cells`
+---（wezterm-gui/src/termwindow/render/fancy_tab_bar.rs），它不扣除右侧状态与
+---窗口按钮的占用，而右状态 float(Right) 沉在标签层（zindex 1）之下——标签
+---标题一长、 collectively 铺满横条时就会盖住时钟。这里把右侧固定占用从预算
+---里扣掉，反推每个标签允许的标题宽度，使标签总宽在任意标签数下都够不到右侧。
+---
+---cell 宽度取终端 pane 的 pixel_width/cols 反推；window_frame.font 与终端字体
+---同源（见 config/appearance.lua），因此该值对标题栏同样成立。
+---@param config_max_width number tab_max_width（cells）
+---@param tab_id number
+---@param tab_count number
+---@return number|nil 有效宽度（cells）；找不到所属窗口时返回 nil（回退 config_max_width）
+local function effective_title_width(config_max_width, tab_id, tab_count)
+   for _, win in ipairs(wezterm.gui.gui_windows()) do
+      local belongs = false
+      for _, mux_tab in ipairs(win:mux_window():tabs()) do
+         if mux_tab:tab_id() == tab_id then
+            belongs = true
+            break
+         end
+      end
+
+      if belongs then
+         local win_tab = win:active_tab()
+         local pane = win_tab and win_tab:active_pane()
+         local pane_dims = pane and pane:get_dimensions()
+
+         if not pane_dims or pane_dims.cols == 0 or pane_dims.pixel_width == 0 then
+            return nil
+         end
+
+         local cell_px = pane_dims.pixel_width / pane_dims.cols
+         local overhead_px = RIGHT_STATUS_CELLS * cell_px
+            + WINDOW_BUTTONS_PX
+            + NEW_TAB_BUTTON_PX
+            + BAR_SLACK_PX
+         local budget =
+            math.floor((win:get_dimensions().pixel_width - overhead_px) / tab_count / cell_px - 1.5)
+
+         return math.max(2, math.min(config_max_width, budget))
+      end
+   end
+
+   return nil
+end
+
 local progress_stale = (function()
    -- stylua: ignore
    local status_score = {
@@ -601,13 +656,15 @@ M.setup = function(opts)
    end)
 
    -- BUILTIN EVENT
-   wezterm.on('format-tab-title', function(tab, _tabs, _panes, _config, hover, max_width)
+   wezterm.on('format-tab-title', function(tab, tabs, _panes, _config, hover, max_width)
       if not tab_list[tab.tab_id] then
          tab_list[tab.tab_id] = Tab:new()
       end
 
-      -- `max_width` refers to the `tab_max_width` option set in `config/appearance.lua`
-      tab_list[tab.tab_id]:update_cells(valid_opts, tab, hover, max_width)
+      -- `max_width` refers to the `tab_max_width` option set in `config/appearance.lua`；
+      -- 标签较多时按 effective_title_width 收紧，防止盖住右上角状态区。
+      local width = effective_title_width(max_width, tab.tab_id, #tabs) or max_width
+      tab_list[tab.tab_id]:update_cells(valid_opts, tab, hover, width)
       return tab_list[tab.tab_id]:render()
    end)
 end
